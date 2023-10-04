@@ -1,0 +1,18 @@
+{
+  "name": "@probaty/three-base",
+  "version": "1.0.0",
+  "description": "Base for three js project",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.157.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.156.0",
+    "typescript": "^5.2.2"
+  }
+}
