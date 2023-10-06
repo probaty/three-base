@@ -1,14 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Entity = void 0;
-class Entity {
-    constructor(_parent, _scene) {
-        this._parent = _parent;
-        this._scene = _scene;
+const Component_1 = require("./Component");
+class Entity extends Component_1.ComponentBase {
+    constructor() {
+        super();
         this._children = [];
         this._name = null;
     }
     AddChild(child) {
+        child.Parent = this;
         this._children.push(child);
     }
     RemoveChild(child) {
@@ -21,9 +22,6 @@ class Entity {
         for (const child of this._children) {
             child.Update(delta);
         }
-    }
-    get Parent() {
-        return this._parent;
     }
     get Name() {
         return this._name;

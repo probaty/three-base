@@ -26,11 +26,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 const THREE = __importStar(require("three"));
 const OrbitControls_1 = require("three/examples/jsm/controls/OrbitControls");
+const EntityController_1 = require("./EntityController");
 class Project {
     constructor(rootElement, options = {}) {
         this.options = options;
         this._orbitControls = null;
-        this._children = [];
+        this._entityController = new EntityController_1.EntityController();
+        this._prevTime = null;
         if (typeof rootElement === "string") {
             const element = document.querySelector(rootElement);
             if (!element) {
@@ -44,14 +46,15 @@ class Project {
         this.createCamera();
         this.createRenderer();
         this.createScene();
-        requestAnimationFrame((time) => {
-            this.update(time);
-        });
+        this.update();
     }
     createRenderer() {
         this._renderer = new THREE.WebGLRenderer();
         this._renderer.setPixelRatio(window.devicePixelRatio);
         this._renderer.setSize(window.innerWidth, window.innerHeight);
+        this._renderer.outputColorSpace = THREE.SRGBColorSpace;
+        this._renderer.shadowMap.enabled = true;
+        this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         window.addEventListener("resize", () => {
             this._renderer.setSize(window.innerWidth, window.innerHeight);
             this._camera.aspect = window.innerWidth / window.innerHeight;
@@ -70,23 +73,26 @@ class Project {
     createScene() {
         this._scene = new THREE.Scene();
     }
-    AddChild(child) {
-        this._children.push(child);
+    AddChild(child, name) {
+        this._entityController.Add(child, name);
     }
-    removeChild(child) {
-        const index = this._children.indexOf(child);
-        if (index !== -1) {
-            this._children.splice(index, 1);
-        }
+    removeChild(name) {
+        this._entityController.Remove(name);
     }
-    update(delta) {
-        for (const child of this._children) {
-            child.Update(delta);
-        }
-        this._renderer.render(this._scene, this._camera);
+    update() {
         requestAnimationFrame((time) => {
-            this.update(time);
+            if (!this._prevTime) {
+                this._prevTime = time;
+            }
+            this.update();
+            this.step(time - this._prevTime);
+            this._renderer.render(this._scene, this._camera);
+            this._prevTime = time;
         });
+    }
+    step(timeElapsed) {
+        const timeElapsedS = Math.min(1.0 / 30.0, timeElapsed * 0.001);
+        this._entityController.Update(timeElapsedS);
     }
     get Camera() {
         return this._camera;

@@ -1,14 +1,11 @@
-import { Project } from "./Project";
-export declare class Entity {
-    private _parent;
-    private _scene;
+import { ComponentBase } from "./Component";
+export declare class Entity extends ComponentBase {
     private _children;
     private _name;
-    constructor(_parent: Entity | Project, _scene: THREE.Scene);
-    AddChild(child: Entity): void;
-    RemoveChild(child: Entity): void;
+    constructor();
+    AddChild(child: ComponentBase): void;
+    RemoveChild(child: ComponentBase): void;
     Update(delta: number): void;
-    get Parent(): Entity | Project;
     get Name(): string | null;
     set Name(name: string);
 }
