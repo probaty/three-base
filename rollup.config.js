@@ -16,7 +16,7 @@ export default [
     plugins: [terser(), typescript()],
     external: ["three", "three/examples/jsm/controls/OrbitControls"],
     output: {
-      file: "dist/index.module.cjs",
+      file: "dist/index.cjs",
       format: "cjs",
     },
   },

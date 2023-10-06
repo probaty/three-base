@@ -30,8 +30,8 @@ export class Project {
       this._rootElement = rootElement;
     }
 
-    this.createCamera();
     this.createRenderer();
+    this.createCamera();
     this.createScene();
 
     window.addEventListener("resize", this.onWindowResize.bind(this));
