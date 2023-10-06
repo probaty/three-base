@@ -1,6 +1,6 @@
 {
   "name": "@probaty/three-base",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Base for three js project",
   "main": "dist/index.js",
   "scripts": {
