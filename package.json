@@ -4,6 +4,7 @@
   "description": "Base for three js project",
   "type": "module",
   "main": "dist/index.js",
+  "module": "dist/index.module.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c"
