@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Entity } from "./Entity";
+import { EntityController } from "./EntityController";
 
 interface ProjectOptions {
   useOrbitControls?: boolean;
@@ -12,7 +13,8 @@ export class Project {
   _scene!: THREE.Scene;
   _camera!: THREE.PerspectiveCamera;
   _orbitControls: OrbitControls | null = null;
-  _children: Entity[] = [];
+  _entityController: EntityController = new EntityController();
+  _prevTime: number | null = null;
 
   constructor(
     rootElement: HTMLElement | string,
@@ -32,15 +34,16 @@ export class Project {
     this.createRenderer();
     this.createScene();
 
-    requestAnimationFrame((time) => {
-      this.update(time);
-    });
+    this.update();
   }
 
   private createRenderer() {
     this._renderer = new THREE.WebGLRenderer();
     this._renderer.setPixelRatio(window.devicePixelRatio);
     this._renderer.setSize(window.innerWidth, window.innerHeight);
+    this._renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this._renderer.shadowMap.enabled = true;
+    this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     window.addEventListener("resize", () => {
       this._renderer.setSize(window.innerWidth, window.innerHeight);
@@ -72,28 +75,31 @@ export class Project {
     this._scene = new THREE.Scene();
   }
 
-  public AddChild(child: Entity) {
-    this._children.push(child);
+  public AddChild(child: Entity, name?: string) {
+    this._entityController.Add(child, name);
   }
 
-  private removeChild(child: Entity) {
-    const index = this._children.indexOf(child);
-    if (index !== -1) {
-      this._children.splice(index, 1);
-    }
+  private removeChild(name: string) {
+    this._entityController.Remove(name);
   }
 
-  private update(delta: number) {
-    for (const child of this._children) {
-      child.Update(delta);
-    }
-    this._renderer.render(this._scene, this._camera);
+  private update() {
     requestAnimationFrame((time) => {
-      this.update(time);
+      if (!this._prevTime) {
+        this._prevTime = time;
+      }
+      this.update();
+      this.step(time - this._prevTime);
+      this._renderer.render(this._scene, this._camera);
+      this._prevTime = time;
     });
   }
 
-  public get Camera(): THREE.PerspectiveCamera {
+  private step(timeElapsed: number) {
+    const timeElapsedS = Math.min(1.0 / 30.0, timeElapsed * 0.001);
+    this._entityController.Update(timeElapsedS);
+  }
+  get Camera(): THREE.PerspectiveCamera {
     return this._camera;
   }
 }
