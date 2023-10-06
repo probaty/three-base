@@ -3,7 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Entity } from "./Entity";
 import { EntityController } from "./EntityController";
 
-interface ProjectOptions {
+export interface ProjectOptions {
   useOrbitControls?: boolean;
 }
 

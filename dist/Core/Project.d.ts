@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Entity } from "./Entity";
-interface ProjectOptions {
+export interface ProjectOptions {
     useOrbitControls?: boolean;
 }
 export declare class Project {
@@ -23,4 +23,3 @@ export declare class Project {
     private step;
     get Camera(): THREE.PerspectiveCamera;
 }
-export {};
