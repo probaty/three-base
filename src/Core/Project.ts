@@ -8,13 +8,13 @@ interface ProjectOptions {
 }
 
 export class Project {
-  _rootElement!: HTMLElement;
-  _renderer!: THREE.WebGLRenderer;
-  _scene!: THREE.Scene;
-  _camera!: THREE.PerspectiveCamera;
-  _orbitControls: OrbitControls | null = null;
-  _entityController: EntityController = new EntityController();
-  _prevTime: number | null = null;
+  private _rootElement!: HTMLElement;
+  private _renderer!: THREE.WebGLRenderer;
+  private _scene!: THREE.Scene;
+  private _camera!: THREE.PerspectiveCamera;
+  private _orbitControls: OrbitControls | null = null;
+  private _entityController: EntityController = new EntityController();
+  private _prevTime: number | null = null;
 
   constructor(
     rootElement: HTMLElement | string,
@@ -34,6 +34,8 @@ export class Project {
     this.createRenderer();
     this.createScene();
 
+    window.addEventListener("resize", this.onWindowResize.bind(this));
+
     this.update();
   }
 
@@ -44,15 +46,7 @@ export class Project {
     this._renderer.outputColorSpace = THREE.SRGBColorSpace;
     this._renderer.shadowMap.enabled = true;
     this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    window.addEventListener("resize", () => {
-      this._renderer.setSize(window.innerWidth, window.innerHeight);
-      this._camera.aspect = window.innerWidth / window.innerHeight;
-      this._camera.updateProjectionMatrix();
-      if (this._orbitControls) {
-        this._orbitControls.update();
-      }
-    });
+    this._rootElement.appendChild(this._renderer.domElement);
   }
 
   private createCamera() {
@@ -73,6 +67,15 @@ export class Project {
 
   private createScene() {
     this._scene = new THREE.Scene();
+  }
+
+  private onWindowResize() {
+    this._renderer.setSize(window.innerWidth, window.innerHeight);
+    this._camera.aspect = window.innerWidth / window.innerHeight;
+    this._camera.updateProjectionMatrix();
+    if (this._orbitControls) {
+      this._orbitControls.update();
+    }
   }
 
   public AddChild(child: Entity, name?: string) {
