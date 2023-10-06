@@ -9,6 +9,8 @@ class ComponentBase {
      * Update
      */
     Update(timeElapsed) { }
+    Emit(type, details) { }
+    AddHandler(type, handler) { }
     set Parent(parent) {
         this._parent = parent;
     }
@@ -20,6 +22,19 @@ exports.ComponentBase = ComponentBase;
 class Component extends ComponentBase {
     constructor() {
         super();
+        this._parent = null;
+    }
+    AddHandler(type, handler) {
+        if (!this._parent) {
+            return;
+        }
+        this._parent.AddHandler(type, handler);
+    }
+    Emit(type, details) {
+        if (!this._parent) {
+            return;
+        }
+        this._parent.Emit(type, details);
     }
     /**
      * InitComponent
