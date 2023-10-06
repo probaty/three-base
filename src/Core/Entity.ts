@@ -1,15 +1,20 @@
-import { Project } from "./Project";
+import { Component, ComponentBase } from "./Component";
+import { EntityController } from "./EntityController";
 
-export class Entity {
-  private _children: Entity[] = [];
+export class Entity extends ComponentBase {
+  private _children: ComponentBase[] = [];
   private _name: string | null = null;
-  constructor(private _parent: Entity | Project, private _scene: THREE.Scene) {}
 
-  public AddChild(child: Entity) {
+  constructor() {
+    super();
+  }
+
+  public AddChild(child: ComponentBase) {
+    child.Parent = this;
     this._children.push(child);
   }
 
-  public RemoveChild(child: Entity) {
+  public RemoveChild(child: ComponentBase) {
     const index = this._children.indexOf(child);
     if (index !== -1) {
       this._children.splice(index, 1);
@@ -20,10 +25,6 @@ export class Entity {
     for (const child of this._children) {
       child.Update(delta);
     }
-  }
-
-  get Parent() {
-    return this._parent;
   }
 
   get Name(): string | null {
