@@ -1,3 +1,4 @@
+import { EntityEvent } from "../types/eventsTypes";
 import { Entity } from "./Entity";
 import { EntityController } from "./EntityController";
 
@@ -9,6 +10,9 @@ export abstract class ComponentBase {
    */
   public Update(timeElapsed: number) {}
 
+  public Emit(type: string, details?: any) {}
+  public AddHandler(type: string, handler: EntityEvent) {}
+
   set Parent(parent: Entity | EntityController) {
     this._parent = parent;
   }
@@ -18,13 +22,28 @@ export abstract class ComponentBase {
   }
 }
 
-export abstract class Component extends ComponentBase {
+export class Component extends ComponentBase {
+  protected _parent: Entity | null = null;
   constructor() {
     super();
+  }
+
+  public AddHandler(type: string, handler: EntityEvent): void {
+    if (!this._parent) {
+      return;
+    }
+    this._parent.AddHandler(type, handler);
+  }
+
+  public Emit(type: string, details?: any): void {
+    if (!this._parent) {
+      return;
+    }
+    this._parent.Emit(type, details);
   }
 
   /**
    * InitComponent
    */
-  public InitComponent() {}
+  public InitComponent(): void {}
 }
