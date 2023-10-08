@@ -7,10 +7,19 @@ export declare class Entity extends ComponentBase {
     private _handlers;
     private _position;
     private _rotation;
+    private _updateCallbacks;
     constructor();
     AddChild(child: ComponentBase): void;
     RemoveChild(child: ComponentBase): void;
     Update(delta: number): void;
+    /**
+     * AddUpdateCB
+     */
+    AddUpdateCB(cb: (delta: number) => void): void;
+    /**
+     * ClearUpdateCB
+     */
+    ClearUpdateCB(): void;
     /**
      * Emit
      */

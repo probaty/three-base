@@ -8,6 +8,7 @@ export class Entity extends ComponentBase {
   private _handlers: { [name: string]: EntityEvent[] } = {};
   private _position: THREE.Vector3 = new THREE.Vector3();
   private _rotation: THREE.Euler = new THREE.Euler();
+  private _updateCallbacks: ((delta: number) => void)[] = [];
 
   constructor() {
     super();
@@ -26,9 +27,26 @@ export class Entity extends ComponentBase {
   }
 
   public Update(delta: number) {
+    for (const cb of this._updateCallbacks) {
+      cb(delta);
+    }
     for (const child of this._children) {
       child.Update(delta);
     }
+  }
+
+  /**
+   * AddUpdateCB
+   */
+  public AddUpdateCB(cb: (delta: number) => void) {
+    this._updateCallbacks.push(cb);
+  }
+
+  /**
+   * ClearUpdateCB
+   */
+  public ClearUpdateCB() {
+    this._updateCallbacks = [];
   }
 
   /**
