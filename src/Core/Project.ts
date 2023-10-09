@@ -8,13 +8,13 @@ export interface ProjectOptions {
 }
 
 export class Project {
-  private _rootElement!: HTMLElement;
-  private _renderer!: THREE.WebGLRenderer;
-  private _scene!: THREE.Scene;
-  private _camera!: THREE.PerspectiveCamera;
-  private _orbitControls: OrbitControls | null = null;
-  private _entityController: EntityController = new EntityController();
-  private _prevTime: number | null = null;
+  protected _rootElement!: HTMLElement;
+  protected _renderer!: THREE.WebGLRenderer;
+  protected _scene!: THREE.Scene;
+  protected _camera!: THREE.PerspectiveCamera;
+  protected _orbitControls: OrbitControls | null = null;
+  protected _entityController: EntityController = new EntityController();
+  protected _prevTime: number | null = null;
 
   constructor(
     rootElement: HTMLElement | string,
